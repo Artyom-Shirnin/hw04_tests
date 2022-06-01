@@ -118,7 +118,7 @@ class PostURLTests(TestCase):
         form_fields = {
             'text': forms.fields.CharField,
             'group': forms.fields.ChoiceField,
-        }     
+        }
         for value, expected in form_fields.items():
             with self.subTest(value=value):
                 form_field = response.context.get('form').fields.get(value)
@@ -131,7 +131,7 @@ class PostURLTests(TestCase):
         form_fields = {
             'text': forms.fields.CharField,
             'group': forms.fields.ChoiceField,
-        }     
+        }
         for value, expected in form_fields.items():
             with self.subTest(value=value):
                 form_field = response.context.get('form').fields.get(value)
@@ -139,20 +139,26 @@ class PostURLTests(TestCase):
 
     def test_paginator_first_page_contains_ten_records(self):
         response = self.guest_client.get(reverse('posts:index'))
-        # Проверка: количество постов из созданной группы на первой странице равно 10.
+        # Проверка: количество постов из созданной группs
+        # на первой странице равно 10.
         self.assertEqual(len(response.context['page_obj']), 10)
 
     def test_paginator_second_page_contains_three_records(self):
-        # Проверка: на второй странице должно быть три поста первой группы и два второй.
+        # Проверка: на второй странице должно быть три поста
+        # первой группы и два второй.
         response = self.guest_client.get(reverse('posts:index') + '?page=2')
         self.assertEqual(len(response.context['page_obj']), 5)
 
     def test_paginator_group_list_contains_two_records(self):
         # Проверка: посты второй группы созданы в количестве двух штук.
-        response = self.guest_client.get(reverse('posts:group_list', kwargs={'slug': 'test-slug-new'}))
+        response = self.guest_client.get(
+            reverse('posts:group_list', kwargs={'slug': 'test-slug-new'})
+        )
         self.assertEqual(len(response.context['page_obj']), 2)
 
     def test_paginator_profile_contains_two_records(self):
         # Проверка: у второго пользователя всего 2 поста.
-        response = self.guest_client.get(reverse('posts:profile', kwargs={'username': 'Second_User'}))
+        response = self.guest_client.get(
+            reverse('posts:profile', kwargs={'username': 'Second_User'})
+        )
         self.assertEqual(len(response.context['page_obj']), 2)
