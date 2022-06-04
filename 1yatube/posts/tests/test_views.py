@@ -64,8 +64,8 @@ class PostURLTests(TestCase):
                 'posts/post_detail.html'
             ),
             reverse('posts:post_create'): 'posts/create_post.html',
-            reverse('posts:post_edit', kwargs={'post_id': 14}): (
-               'posts/create_post.html'
+            reverse('posts:post_edit', kwargs={'post_id': 13+1}): (
+                'posts/create_post.html'
             ),
         }
         # Проверяем, что при обращении к name вызывается

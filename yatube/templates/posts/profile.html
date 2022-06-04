@@ -14,13 +14,20 @@
               Автор: {{ author.get_full_name }}
               <a href="{% url 'posts:profile' post.author.username %}">все посты пользователя</a>
             </li>
+            {% if post.group %} 
+            <li>
+                Группа: {{ post.group.title }}
+                <a href="{% url 'posts:group_list' post.group.slug %}">
+                  все записи группы
+                </a>
+              </li>
+          {% endif %}
             <li>
               Дата публикации: {{ post.pub_date|date:"d E Y" }}
             </li>
           </ul>
           <p>{{ post.text }}</p>
           <a href="{% url 'posts:post_detail' post.pk %}">подробная информация</a>
-          <p><a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a></p>
         </article>       
 {% if not forloop.last %}<hr>{% endif %}    
 {% endfor %}
