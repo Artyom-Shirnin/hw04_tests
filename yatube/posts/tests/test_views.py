@@ -64,8 +64,8 @@ class PostURLTests(TestCase):
                 'posts/post_detail.html'
             ),
             reverse('posts:post_create'): 'posts/create_post.html',
-            reverse('posts:post_edit', kwargs={'post_id': 13}): (
-                'posts/create_post.html'
+            reverse('posts:post_edit', kwargs={'post_id': 14}): (
+               'posts/create_post.html'
             ),
         }
         # Проверяем, что при обращении к name вызывается
@@ -109,7 +109,7 @@ class PostURLTests(TestCase):
         response = self.authorized_client.get(
             reverse('posts:post_detail', kwargs={'post_id': (self.post.pk)})
         )
-        self.assertIn('posts', response.context)
+        self.assertIn('post', response.context)
         self.assertIn('posts_count', response.context)
         self.assertIn('title', response.context)
 

@@ -56,7 +56,7 @@ def post_detail(request, post_id):
     posts_count = post.author.posts.count()
     title = post.text[0:30]
     context = {
-        'posts': post,
+        'post': post,
         'posts_count': posts_count,
         'title': title,
     }
@@ -82,13 +82,18 @@ def post_create(request):
 @csrf_exempt
 def post_edit(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
-    is_edit = True
-    form = PostForm(request.POST, instance=post)
+    if post.author != request.user:
+        return redirect('posts:post_detail', post_id=post_id)
+    form = PostForm(
+        request.POST or None,
+        files=request.FILES or None,
+        instance=post
+    )
     if form.is_valid():
-        post.save()
-        return redirect('posts:post_detail', post_id)
+        form.save()
+        return redirect('posts:post_detail', post_id=post_id)
     context = {
-        'is_edit': is_edit,
+        'is_edit': True,
         'form': form,
         'post': post,
     }

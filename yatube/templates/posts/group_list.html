@@ -18,11 +18,13 @@
     <li>
       Автор: {{ post.author.get_full_name }}
     </li>
+    <a href="{% url 'posts:profile' post.author.username %}">все посты пользователя</a>
     <li>
       Дата публикации: {{ post.pub_date|date:"d E Y" }}
     </li>
   </ul>
   <p>{{ post.text }}</p>
+  <a href="{% url 'posts:post_detail' post.pk %}">подробная информация</a>
 {% if not forloop.last %}<hr>{% endif %}    
 {% endfor %}
 </article>
