@@ -1,10 +1,8 @@
-from django.contrib.auth import get_user_model
 from posts.forms import PostForm
-from posts.models import Group, Post
+from posts.models import Group, Post, User
 from django.test import Client, TestCase
 from django.urls import reverse
-
-User = get_user_model()
+from http import HTTPStatus
 
 
 class PostCreateFormTests(TestCase):
@@ -59,3 +57,7 @@ class PostCreateFormTests(TestCase):
                 text='Тестовый текст'
             ).exists()
         )
+    def test_post_create_url_not_exists_at_desired_location(self):
+        """Страница create/ не доступна неавторизованному пользователю."""
+        response = self.guest_client.get('/create/')
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
