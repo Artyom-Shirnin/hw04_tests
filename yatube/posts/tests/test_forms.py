@@ -57,6 +57,7 @@ class PostCreateFormTests(TestCase):
                 text='Тестовый текст'
             ).exists()
         )
+    
     def test_post_create_url_not_exists_at_desired_location(self):
         """Страница create/ не доступна неавторизованному пользователю."""
         response = self.guest_client.get('/create/')
