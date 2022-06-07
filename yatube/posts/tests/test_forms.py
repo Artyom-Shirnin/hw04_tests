@@ -12,7 +12,7 @@ class PostCreateFormTests(TestCase):
         # Создаем неавторизованный клиент
         cls.guest_client = Client()
         # Создаем авторизованый клиент
-        cls.user = User.objects.create(username='User')
+        cls.user = User.objects.create_user(username='user')
         cls.authorized_client = Client()
         cls.authorized_client.force_login(cls.user)
         # Создадим группу в БД
@@ -58,7 +58,48 @@ class PostCreateFormTests(TestCase):
             ).exists()
         )
 
-    def test_post_create_url_not_exists_at_desired_location(self):
-        """Страница create/ не доступна неавторизованному пользователю."""
-        response = self.guest_client.get('/create/')
-        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+    def test_guest_create_post(self):
+        # Проверяем, что неавторизованный пользователь не может создать пост
+        form_data = {
+            'text': 'Тестовый пост от неавторизованного пользователя',
+            'group': self.group.pk,
+        }
+        self.guest_client.post(
+            reverse('posts:post_create'),
+            data=form_data,
+            follow=True,
+        )
+        self.assertFalse(
+            Post.objects.filter(
+                text='Тестовый пост от неавторизованного пользователя'
+            ).exists()
+        )
+
+    def test_authorized_edit_post(self):
+        # Проверяем, что авторизованный пользователь может редактировать пост
+        form_data = {
+            'text': 'Тестовый текст',
+            'group': self.group.pk,
+        }
+        self.authorized_client.post(
+            reverse('posts:post_create'),
+            data=form_data,
+            follow=True,
+        )
+        post_edit = Post.objects.get(pk=self.group.pk)
+        self.client.get(f'/posts/{post_edit.pk}/edit/')
+        form_data = {
+            'text': 'Измененный пост от авторизованного пользователя',
+            'group': self.group.pk
+        }
+        response_edit = self.authorized_client.post(
+            reverse('posts:post_edit',
+                    kwargs={
+                        'post_id': post_edit.pk
+                    }),
+            data=form_data,
+            follow=True,
+        )
+        post_edit = Post.objects.get(pk=self.group.pk)
+        self.assertEqual(response_edit.status_code, HTTPStatus.OK)
+        self.assertEqual(post_edit.text, 'Измененный пост от авторизованного пользователя')
