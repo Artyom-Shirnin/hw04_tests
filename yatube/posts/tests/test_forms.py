@@ -93,7 +93,7 @@ class PostCreateFormTests(TestCase):
         post_edit = Post.objects.get(pk=self.group.pk)
         self.client.get(f'/posts/{post_edit.pk}/edit/')
         form_data = {
-            'text': 'Измененный пост от авторизованного пользователя',
+            'text': 'Измененный пост',
             'group': self.group.pk
         }
         response_edit = self.authorized_client.post(
@@ -106,4 +106,4 @@ class PostCreateFormTests(TestCase):
         )
         post_edit = Post.objects.get(pk=self.group.pk)
         self.assertEqual(response_edit.status_code, HTTPStatus.OK)
-        self.assertEqual(post_edit.text, 'Измененный пост от авторизованного пользователя')
+        self.assertEqual(post_edit.text, 'Измененный пост')
